@@ -1,0 +1,44 @@
+name: Deploy to Prod finance.givenjeremia.com
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd domains/finance.givenjeremia.com/public_html/
+
+            git pull origin main
+
+            cat > .env << 'EOF'
+            ${{ secrets.APP_ENV_FILE }}
+            EOF
+
+            composer install --no-dev --prefer-dist --optimize-autoloader
+
+            php artisan key:generate --force || true
+
+            php artisan migrate --force
+
+            php artisan config:clear
+            php artisan cache:clear
+            php artisan route:clear
+            php artisan view:clear
+
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            php artisan optimize
