@@ -50,11 +50,11 @@ class TelegramSettingsTable
 
                     try {
 
-                        app(TelegramService::class)->send(
-                            $record->bot_token,
-                            $record->chat_id,
-                            '✅ Telegram Finance Connected'
-                        );
+                        // app(TelegramService::class)->send(
+                        //     $record->bot_token,
+                        //     $record->chat_id,
+                        //     '✅ Telegram Finance Connected'
+                        // );
 
                         Notification::make()
                             ->title('Telegram message sent')
