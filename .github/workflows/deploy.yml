@@ -18,27 +18,52 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
+            echo "===== START DEPLOY ====="
+
+            echo "1. Change directory"
             cd domains/finance.givenjeremia.com/public_html/
+            echo "✅ Directory: $(pwd)"
 
+            echo "2. List files"
+            ls -la
+
+            echo "3. Git pull"
             git pull origin main
+            echo "✅ Git pull success"
 
+            echo "4. Write .env"
             cat > .env << 'EOF'
             ${{ secrets.APP_ENV_FILE }}
             EOF
+            echo "✅ .env created"
 
+            echo "5. Composer install"
             composer install --no-dev --prefer-dist --optimize-autoloader
+            echo "✅ Composer install success"
 
+            echo "6. Generate app key"
             php artisan key:generate --force || true
+            echo "✅ Key generated"
 
+            echo "7. Run migrations"
             php artisan migrate --force
+            echo "✅ Migration success"
 
+            echo "8. Clear caches"
             php artisan config:clear
             php artisan cache:clear
             php artisan route:clear
             php artisan view:clear
+            echo "✅ Cache cleared"
 
+            echo "9. Build caches"
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            echo "✅ Cache rebuilt"
 
+            echo "10. Optimize"
             php artisan optimize
+            echo "✅ Optimize success"
+
+            echo "===== DEPLOY FINISHED SUCCESSFULLY ====="
