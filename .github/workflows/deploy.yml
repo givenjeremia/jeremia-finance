@@ -44,7 +44,9 @@ jobs:
             git pull origin main
 
             echo "Write .env"
-            printf '%s\n' "${{ secrets.APP_ENV_FILE }}" > .env
+            cat > .env <<'EOF'
+            ${{ secrets.APP_ENV_FILE }}
+            EOF
 
             echo "Composer install"
             composer install --no-dev --prefer-dist --optimize-autoloader
