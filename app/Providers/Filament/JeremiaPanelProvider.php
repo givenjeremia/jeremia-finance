@@ -28,7 +28,7 @@ class JeremiaPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('jeremia')
-            ->path('jeremia')
+            ->path('')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
