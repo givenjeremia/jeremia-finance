@@ -44,7 +44,6 @@ jobs:
             git pull origin main
 
             echo "Write .env"
-            echo "${{ secrets.APP_ENV_FILE }}"
             printf '%s\n' "${{ secrets.APP_ENV_FILE }}" > .env
 
             echo "Composer install"
